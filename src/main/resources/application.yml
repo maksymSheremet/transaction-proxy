@@ -1,0 +1,74 @@
+server:
+  port: 8080
+  tomcat:
+    max-http-response-header-size: 8KB
+    max-keep-alive-requests: 100
+    connection-timeout: 60s
+  max-http-request-header-size: 8KB
+
+spring:
+  application:
+    name: transaction-proxy
+
+  # PostgreSQL
+  datasource:
+    url: ${PG_DATA_URL}
+    username: ${PG_DATA_USER}
+    password: ${PG_DATA_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        # Optimizations for PostgreSQL
+        connection:
+          provider_disables_autocommit: true
+        temp:
+          use_jdbc_metadata_defaults: false
+
+#  Setting up Jackson to work with the Java 8 Date/Time API
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    time-zone: Europe/Kiev
+
+# Logging settings
+logging:
+  level:
+    my.code.transactionproxy: INFO
+    org.springframework.web.reactive: WARN
+    reactor.netty: WARN
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Settings for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# JVM parameters for memory limitation (add to the startup script):
+# -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication

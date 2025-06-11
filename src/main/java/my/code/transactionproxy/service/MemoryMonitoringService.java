@@ -36,14 +36,6 @@ public class MemoryMonitoringService {
                     String.format("%.1f", usagePercentage * 100));
             cacheService.cleanupOldEntries();
 
-            System.gc();
-        }
-
-        if (usagePercentage > MEMORY_THRESHOLD) {
-            log.warn("Memory usage is high ({}%), triggering cache cleanup",
-                    String.format("%.1f", usagePercentage * 100));
-            cacheService.cleanupOldEntries();
-
             log.info("Cache cleanup completed, waiting for JVM to manage memory");
         }
     }

@@ -128,7 +128,7 @@ class TransactionControllerIT {
                         .queryParam("enddate", endDate)
                         .build())
                 .exchange()
-                .expectStatus().is5xxServerError();
+                .expectStatus().is4xxClientError();
     }
 
     @Test

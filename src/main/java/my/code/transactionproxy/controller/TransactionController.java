@@ -31,8 +31,7 @@ public class TransactionController {
         return transactionService.fetchTransactionsPaged(TransactionQueryParams.fromMultiValueMap(params))
                 .map(ResponseEntity::ok)
                 .doOnSuccess(response -> log.info("Returning {} transactions",
-                        response.getBody().getTransactions().size()))
-                .onErrorReturn(ResponseEntity.internalServerError().build());
+                        response.getBody().getTransactions().size()));
     }
 }
 
